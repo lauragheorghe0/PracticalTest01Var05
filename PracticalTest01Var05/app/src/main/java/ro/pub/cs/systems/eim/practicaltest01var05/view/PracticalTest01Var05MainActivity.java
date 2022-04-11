@@ -1,8 +1,10 @@
 package ro.pub.cs.systems.eim.practicaltest01var05.view;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -11,6 +13,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import ro.pub.cs.systems.eim.practicaltest01var05.R;
+import ro.pub.cs.systems.eim.practicaltest01var05.general.Constants;
 
 public class PracticalTest01Var05MainActivity extends AppCompatActivity {
     private Button centerButton;
@@ -18,6 +21,8 @@ public class PracticalTest01Var05MainActivity extends AppCompatActivity {
     private Button topRightButton;
     private Button bottomLeftButton;
     private Button bottomRightButton;
+
+    private Button nextActivityButton;
 
     private int totalClicks;
 
@@ -50,6 +55,12 @@ public class PracticalTest01Var05MainActivity extends AppCompatActivity {
                 case R.id.bottom_right_button:
                     buttonsPressedEditText.setText(currentText + "Bottom Right");
                     break;
+                case R.id.next_activity_button:
+                    Intent intent = new Intent(getApplicationContext(), PracticalTest01Var05SecondaryActivity.class);
+                    intent.putExtra(Constants.PATTERN, currentText);
+                    startActivityForResult(intent, Constants.SECONDARY_ACTIVITY_REQUEST_CODE);
+                    break;
+
             }
         }
     }
@@ -76,6 +87,9 @@ public class PracticalTest01Var05MainActivity extends AppCompatActivity {
         bottomRightButton.setOnClickListener(relativeButtonOnClickListener);
 
         buttonsPressedEditText = (EditText)findViewById(R.id.buttons_pressed_edit_text);
+
+        nextActivityButton = (Button)findViewById(R.id.next_activity_button);
+        nextActivityButton.setOnClickListener(relativeButtonOnClickListener);
     }
 
     @Override
@@ -94,5 +108,13 @@ public class PracticalTest01Var05MainActivity extends AppCompatActivity {
         totalClicks = savedInstanceState.containsKey("TOTAL_CLICKS") ? savedInstanceState.getInt("TOTAL_CLICKS") : 0;
 
         Toast.makeText(this, "Total clicks: " + totalClicks, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == Constants.SECONDARY_ACTIVITY_REQUEST_CODE) {
+            Toast.makeText(this, "The activity returned with result " + resultCode, Toast.LENGTH_LONG).show();
+        }
     }
 }
